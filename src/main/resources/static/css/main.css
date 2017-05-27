@@ -1,0 +1,8 @@
+.table.table-pull-request>tbody>tr>td, .table.table-pull-request>tbody>tr>th{
+	vertical-align:middle;
+}
+
+.loading{
+	background-color: #fff !important;
+	text-align:center;
+}

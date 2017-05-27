@@ -4,14 +4,16 @@
  */
 package com.dean.tesoriero.requirement9.service;
 
+import com.dean.tesoriero.requirement9.dto.PullRequestDto;
 import java.io.IOException;
 import java.util.List;
-import org.kohsuke.github.GHIssueState;
-import org.kohsuke.github.GHPullRequest;
 
 /**
  * @author Dean Tesoriero
  */
 public interface GithubApiService {
-  List<GHPullRequest> getAllPullRequests(GHIssueState state) throws IOException;
+  List<PullRequestDto> getAllPullRequests(String state) throws IOException;
+
+
+  void mergeRequest(int pullId) throws IOException;
 }

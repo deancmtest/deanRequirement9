@@ -4,12 +4,14 @@
  */
 package com.dean.tesoriero.requirement9.controller;
 
+import com.dean.tesoriero.requirement9.dto.PullRequestDto;
 import com.dean.tesoriero.requirement9.service.GithubApiService;
 import java.io.IOException;
 import java.util.List;
-import org.kohsuke.github.GHIssueState;
-import org.kohsuke.github.GHPullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +28,19 @@ public class ApiController {
   GithubApiService mApiService;
 
   @RequestMapping(path = "/pulls", method = RequestMethod.GET)
-  public List<GHPullRequest> getAllPullRequests(@RequestParam("state") String state) throws IOException {
-    return mApiService.getAllPullRequests(GHIssueState.ALL);
+  public ResponseEntity<List<PullRequestDto>> getAllPullRequests(@RequestParam("state") String state) throws IOException {
+    if(state == null)
+      return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    return new ResponseEntity(mApiService.getAllPullRequests(state), HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/pulls/{pullId}", method = RequestMethod.POST)
+  public ResponseEntity<List<PullRequestDto>> mergeRequests(@PathVariable int pullId) throws IOException {
+    if(pullId == 0)
+      return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    mApiService.mergeRequest(pullId);
+    return new ResponseEntity(HttpStatus.OK);
   }
 
 }
