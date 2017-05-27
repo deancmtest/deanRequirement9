@@ -7,6 +7,7 @@ package com.dean.tesoriero.requirement9.controller;
 import com.dean.tesoriero.requirement9.dto.PullRequestDto;
 import com.dean.tesoriero.requirement9.service.GithubApiService;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,19 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
   @Autowired
-  GithubApiService mApiService;
+  private GithubApiService mApiService;
+  private final static List<String> VALID_STATES = Arrays.asList("open", "closed", "all");
 
   @RequestMapping(path = "/pulls", method = RequestMethod.GET)
   public ResponseEntity<List<PullRequestDto>> getAllPullRequests(@RequestParam("state") String state) throws IOException {
-    if(state == null)
-      return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    if(state == null || !VALID_STATES.contains(state))
+      return  new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
     return new ResponseEntity(mApiService.getAllPullRequests(state), HttpStatus.OK);
   }
 
   @RequestMapping(path = "/pulls/{pullId}", method = RequestMethod.POST)
   public ResponseEntity<List<PullRequestDto>> mergeRequests(@PathVariable int pullId) throws IOException {
     if(pullId == 0)
-      return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return  new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 
     mApiService.mergeRequest(pullId);
     return new ResponseEntity(HttpStatus.OK);

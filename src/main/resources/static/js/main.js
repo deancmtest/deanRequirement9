@@ -12,23 +12,24 @@
             return `${prefix} ${diffDays} day(s) and ${diffHours} hours ago`;
         }
     }
-
     function addError(error) {
         $("#errorContainer").show().append(`<p>${error}</p>`);
     }
-
     function clearErrors() {
         $("#errorContainer").hide().html('')
     }
-
+    function showLoading() {
+        $('#openRequestTable>tbody, #closedRequestTable>tbody').html(`<tr><td colspan="4" class="loading"><img src="img/loading.gif"></td></tr>`)
+    }
     function getPullRequests(state) {
+        showLoading();
         return $.ajax({
             url: basePath + "/pulls?state=" + state,
         });
     }
-
     window.merge = (id) => {
         clearErrors();
+        showLoading();
         $.ajax({
             url: basePath + "/pulls/" + id,
             type: "POST"
@@ -38,7 +39,6 @@
             addError("Unable to merge requests")
         });
     };
-
     function loadPullRequests() {
         clearErrors();
         getPullRequests("closed").done((closedRequests) => {
